@@ -1,4 +1,4 @@
-<?PHP
+<?php
 
 $shell = array();
 $base = '../';
@@ -6,7 +6,7 @@ $base = '../';
 $shell['title2'] = 'Examples';
 $shell['link2'] = '../';
 
-include 'config.php';
+include dirname(__FILE__) . '/config.php';
 
 ob_start();
 ?>
@@ -20,7 +20,7 @@ ob_start();
       </form>
       <div class="clear"></div>
     </div>
-<?
+<?php
 $shell['donate'] = ob_get_contents();
 ob_end_clean();
 
@@ -32,29 +32,29 @@ function draw_shell() {
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title>
-    <? if ( $shell['title'] ) { print $shell['title']; } else { ?>
-    Ben Alman &raquo; <?= $shell['title1'] ?><? if ( $shell['title2'] ) { print ' &raquo; ' . $shell['title2']; } ?><? if ( $shell['title3'] ) { print ' &raquo; ' . $shell['title3']; } ?>
-    <? } ?>
+    <?php if ( $shell['title'] ) { print $shell['title']; } else { ?>
+    Ben Alman &raquo; <?php print $shell['title1'] ?><?php if ( $shell['title2'] ) { print ' &raquo; ' . $shell['title2']; } ?><?php if ( $shell['title3'] ) { print ' &raquo; ' . $shell['title3']; } ?>
+    <?php } ?>
   </title>
-  <script type="text/javascript" src="<?= $base ?>../shared/ba-debug.js"></script>
-  <?
+  <script type="text/javascript" src="<?php print $base ?>../shared/ba-debug.js"></script>
+  <?php
   if ( $shell['jquery'] ) {
-    ?><script type="text/javascript" src="<?= $base ?>../shared/<?= $shell['jquery'] ?>"></script><?
+    ?><script type="text/javascript" src="<?php print $base ?>../shared/<?php print $shell['jquery'] ?>"></script><?php
   }
   
-  ?><script type="text/javascript" src="<?= $base ?>../shared/SyntaxHighlighter/scripts/shCore.js"></script><?
+  ?><script type="text/javascript" src="<?php print $base ?>../shared/SyntaxHighlighter/scripts/shCore.js"></script><?php
   
   if ( $shell['shBrush'] ) {
     foreach ( $shell['shBrush'] as $brush ) {
-      ?><script type="text/javascript" src="<?= $base ?>../shared/SyntaxHighlighter/scripts/shBrush<?= $brush ?>.js"></script><?
+      ?><script type="text/javascript" src="<?php print $base ?>../shared/SyntaxHighlighter/scripts/shBrush<?php print $brush ?>.js"></script><?php
     }
   }
   ?>
-  <link rel="stylesheet" type="text/css" href="<?= $base ?>../shared/SyntaxHighlighter/styles/shCore.css">
-  <link rel="stylesheet" type="text/css" href="<?= $base ?>../shared/SyntaxHighlighter/styles/shThemeDefault.css">
-  <link rel="stylesheet" type="text/css" href="<?= $base ?>index.css">
+  <link rel="stylesheet" type="text/css" href="<?php print $base ?>../shared/SyntaxHighlighter/styles/shCore.css">
+  <link rel="stylesheet" type="text/css" href="<?php print $base ?>../shared/SyntaxHighlighter/styles/shThemeDefault.css">
+  <link rel="stylesheet" type="text/css" href="<?php print $base ?>index.css">
   
-<?= $shell['html_head'] ?>
+<?php print $shell['html_head'] ?>
 
 </head>
 <body>
@@ -63,7 +63,7 @@ function draw_shell() {
   <div id="header">
     <h1>
       <a href="http://benalman.com/" class="title"><b>Ben</b> Alman</a>
-      <?
+      <?php
       $i = 1;
       while ( $shell["title$i"] ) {
         print ' &raquo; ';
@@ -76,17 +76,17 @@ function draw_shell() {
       }
       ?>
     </h1>
-    <?
+    <?php
     $i = 2;
     while ( $shell["h$i"] ) {
       print "<h$i>" . $shell["h$i"] . "</h$i>";
       $i++;
     }
     ?>
-    <?= $shell['html_header'] ?>
+    <?php print $shell['html_header'] ?>
   </div>
   <div id="content">
-    <?= $shell['html_body'] ?>
+    <?php print $shell['html_body'] ?>
   </div>
   <div id="footer">
     <p>
@@ -99,7 +99,7 @@ function draw_shell() {
 </div>
 
 </body>
-</html><?
+</html><?php
 
 }
 

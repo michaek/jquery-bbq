@@ -1,4 +1,4 @@
-<?PHP
+<?php
 
 include "../index.php";
 
@@ -69,7 +69,7 @@ $(function(){
   $(window).trigger( 'hashchange' );
   
 });
-<?
+<?php
 $shell['script'] = ob_get_contents();
 ob_end_clean();
 
@@ -85,7 +85,7 @@ ob_start();
 <script type="text/javascript" src="../../jquery.ba-bbq.js"></script>
 <script type="text/javascript" language="javascript">
 
-<?= $shell['script']; ?>
+<?php print $shell['script']; ?>
 
 $(function(){
   
@@ -138,7 +138,7 @@ ul li {
 }
 
 </style>
-<?
+<?php
 $shell['html_head'] = ob_get_contents();
 ob_end_clean();
 
@@ -148,7 +148,7 @@ ob_end_clean();
 
 ob_start();
 ?>
-<?= $shell['donate'] ?>
+<?php print $shell['donate'] ?>
 
 <p>
   With <a href="http://benalman.com/projects/jquery-bbq-plugin/">jQuery BBQ</a> you can keep track of state, history and allow bookmarking multiple <a href="http://jqueryui.com/demos/tabs/">jQuery UI tab</a> widgets simultaneously.. just click some tabs, use your browser's back and next buttons, reload the page.. and when you're done playing, check out the code!
@@ -231,10 +231,10 @@ ob_start();
 <p>Note that a lot of the following code is very similar to the <a href="../fragment-advanced/">advanced window.onhashchange</a> example. That's intentional! They're functionally very similar, but this example is much less complicated due to jQuery UI Tabs' built-in functionality.</p>
 
 <pre class="brush:js">
-<?= htmlspecialchars( $shell['script'] ); ?>
+<?php print htmlspecialchars( $shell['script'] ); ?>
 </pre>
 
-<?
+<?php
 $shell['html_body'] = ob_get_contents();
 ob_end_clean();
 
