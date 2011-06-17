@@ -813,9 +813,19 @@
       url = jq_param_fragment( location.href,
         has_args ? params : {}, has_args ? merge_mode : 2 );
     
-    // Set new window.location.href. Note that Safari 3 & Chrome barf on
-    // location.hash = '#' so the entire URL is set.
-    location.href = url;
+    // Remove trailing characters =
+    url = url.replace(/[=?&]$/, '')
+    
+    if ($.support.pushState) {
+      // TODO: handle state, not just url
+      window.history.pushState({}, null, get_fragment(url))
+      $(window).hashchange();
+    } else {
+      // Set new window.location.href. Note that Safari 3 & Chrome barf on
+      // location.hash = '#' so the entire URL is set.
+      location.href = url;
+    }
+    
   };
   
   // Method: jQuery.bbq.getState
@@ -1088,13 +1098,20 @@
     // though the event isn't supported, so also test document.documentMode.
     doc_mode = doc.documentMode,
     supports_onhashchange = 'on' + str_hashchange in window && ( doc_mode === undefined || doc_mode > 7 );
-  
+
+  $.support.pushState = window.history && window.history.pushState !== undefined;
+    
   // Get location.hash (or what you'd expect location.hash to be) sans any
   // leading #. Thanks for making this necessary, Firefox!
   function get_fragment( url ) {
     url = url || location.href;
     return '#' + url.replace( /^[^#]*#?(.*)$/, '$1' );
   };
+
+  // For modern browsers, treat the popstate event like a hashchange.
+  $(window).bind( 'popstate', function(e) {
+    $(window).trigger(str_hashchange);
+  })
   
   // Method: jQuery.fn.hashchange
   // 
