@@ -1,6 +1,16 @@
 # jQuery BBQ: Back Button & Query Library #
 [http://benalman.com/projects/jquery-bbq-plugin/](http://benalman.com/projects/jquery-bbq-plugin/)
 
+## This Fork
+
+This fork was created to enable pushState support for jquery-bbq. So far, it works for my purposes, but I forsee it could use considerable refactoring. My hope would be to keep the current method signature, so further refactoring will mostly be behind the scenes, but that could turn out to be optimistic!
+
+The second goal of my fork is to provide a pjax-style add-on for jquery-bbq, an example of which is available here:
+[http://www.jquerybbq.dotcloud.com/examples/fragment-pjax/](http://www.jquerybbq.dotcloud.com/examples/fragment-pjax/)
+
+
+-----
+
 Version: 1.3pre, Last updated: 8/26/2010
 
 jQuery BBQ enables simple, yet powerful bookmarkable #hash history via a cross-browser window.onhashchange event. In addition, jQuery BBQ provides a full jQuery.deparam() method, along with both fragment and query string parse and merge utility methods.
