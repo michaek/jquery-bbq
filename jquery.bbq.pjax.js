@@ -24,8 +24,8 @@
       var lastURL = rootUrlPlaceholder
     }
     
-    // Only use the first matched element as the content container.
-    this.first().each(function(){
+    // We should only use the first matched element as the content container.
+    this.each(function(){
       $container = $(this)
       
       // Set up the initial pjax-page content.
