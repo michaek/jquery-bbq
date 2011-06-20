@@ -1,47 +1,90 @@
 (function($, undefined){
   
-  var registry = {}
+  var cache = {}
+  var rootUrlPlaceholder = '__root__'
+  
+  var $container = $currentPage = options = null
+  var $pjaxWrapTemplate = $('<div class="pjax-page" />')
 
   $.fn.bbq_pjax = function(options){
-    var options = $.extend({
-      linkSelector: 'a'
+    options = $.extend({
+      linkSelector: 'a',
+      transition: function($from, $to) {
+        $from.hide()
+        $to.show()
+      }
     }, options)
+
+    // We assume that the initial content is current when pushState is available,
+    // but that we still need to load the initial content if we're using the fallback.
+    if ($.support.pushState) {
+      var lastURL = currentUrl()
+    } else {
+      // Unless we're at the root
+      var lastURL = rootUrlPlaceholder
+    }
     
     // Only use the first matched element as the content container.
     this.first().each(function(){
-      var $container = $(this)
+      $container = $(this)
       
+      // Set up the initial pjax-page content.
+      var $pjaxPage = $pjaxWrapTemplate.clone()
+      $pjaxPage.append($container.children()).appendTo($container)
+      $currentPage = cache[lastURL] = $pjaxPage
+    
       $(options.linkSelector).live('click', function(event){
         $link = $(event.srcElement)
         
-        if (!$link.hasClass('pjax-registered')) {
-          // Store anchors in a registry by their URLs
-          var url = rootRelativeUrl($link.attr( 'href' ))
-          registry[url] = registry[url] || []
-          registry[url].push($link)
-          
-          // Store the content container on this anchor
-          $link.data('pjaxContainer', $container)
-          // Store the options on this anchor
-          $link.data('pjaxOptions', options)
-
-          // Mark this link as being registered, to prevent re-registry.
-          $link.addClass('pjax-registered')
-        }
-
         // Get the url from the link's href attribute, stripping any leading #.
         $.bbq.pushState( $link.attr( 'href' ).replace( /^#/, '' ), 2 )
         // Prevent the default link click behavior.
         return false
       })
       
-      
     })
+
+    // Bind an event to window.onhashchange
+    $(window).bind( 'hashchange', function(e) {
+      var url = currentUrl()
+      if (url === lastURL) { return }
+      console.log(lastURL, url);
+      lastURL = url;
+      
+
+      var rel_url = rootRelativeUrl(url)
+      // 
+      if (cache[rel_url]) {
+        transition(cache[rel_url])
+      } else {
+        $container.addClass('pjax-loading')
+        cache[rel_url] = $pjaxWrapTemplate.clone().data('pjax-url', rel_url)
+        cache[rel_url].load(url, function(){
+          $(this).find('meta').remove()
+          $(this).data('pjax-title', $.trim( $(this).find('title').remove().text() ))
+          $(this).hide().appendTo($container)
+          transition(cache[rel_url])
+          $container.removeClass('pjax-loading')
+        })
+      }
+    })
+  
+    var transition = function($to){
+      options.transition($currentPage, $to)
+      $currentPage = $to
+    }
+
+    // Since the event is only triggered when the hash changes, we need to trigger
+    // the event now, to handle the hash the page may have loaded with.
+    $(window).trigger( 'hashchange' );
+
   }
 
   var rootRelativeUrl = function(url){
     var l = window.location
-    if (url.indexOf('http') === 0) {
+    if (url == rootUrlPlaceholder) {
+      return url
+    } else if (url.indexOf('http') === 0) {
       return url.replace(/^(?:\/\/|[^\/]+)*\//, '/') 
     } else if (url.indexOf('/') === 0) {
       return url
@@ -54,31 +97,10 @@
   }
 
   var currentUrl = function(){
-    return ($.support.pushState) 
+    var url = ($.support.pushState) 
       ? window.location.href.replace(/^(?:\/\/|[^\/]+)*\//, '/') 
       : window.location.hash.replace(/^#/, '')
+    return url != '' ? url : rootUrlPlaceholder
   }
-
-  var lastURL = currentUrl()
-  
-  // Bind an event to window.onhashchange
-  $(window).bind( 'hashchange', function(e) {
-    var url = currentUrl()
-    if (url === lastURL) { return }
-    lastURL = url;
-    
-    var rel_url = rootRelativeUrl(url)
-    if (registry[rel_url] && registry[rel_url].length) {
-      // Currently, this is just guessing the container by the url of the link.
-      // TODO: Make this a little more clever.
-      var $container = registry[rel_url][0].data('pjaxContainer');
-      $container.load(url, function(){
-      })
-    }
-  })
-  
-  // Since the event is only triggered when the hash changes, we need to trigger
-  // the event now, to handle the hash the page may have loaded with.
-  $(window).trigger( 'hashchange' );
 
 })(jQuery)

@@ -13,13 +13,15 @@ $shell['h2'] = 'Cached AJAX + fragment + history + bookmarking = Tasty!';
 ob_start();
 ?>
 
-// Disable pushState? This just allows you to pass ?disable=true to test without pushState.
-$.support.pushState = <?php print $_GET['disable'] ? 'false' : 'true' ?>;
-
-// This is really all you need!
 $(function(){
 
-  $('.bbq-item').bbq_pjax({linkSelector: 'a'});
+  $('.bbq-item').bbq_pjax({
+    linkSelector: 'a',
+    transition: function($from, $to){
+      $from.slideUp()
+      $to.slideDown()
+    }
+  });
   
 });
 
@@ -34,9 +36,11 @@ ob_end_clean();
 ob_start();
 ?>
 <script type="text/javascript" src="../../jquery.ba-bbq.js"></script>
+<script type="text/javascript" language="javascript">
+$.support.pushState = <?php print $_GET['disable'] ? 'false' : 'true' ?>
+</script>
 <script type="text/javascript" src="../../jquery.bbq.pjax.js"></script>
 <script type="text/javascript" language="javascript">
-
 <?php print $shell['script']; ?>
 
 $(function(){
