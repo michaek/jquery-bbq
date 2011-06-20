@@ -48,7 +48,6 @@
     $(window).bind( 'hashchange', function(e) {
       var url = currentUrl()
       if (url === lastURL) { return }
-      console.log(lastURL, url);
       lastURL = url;
       
 
@@ -70,7 +69,17 @@
     })
   
     var transition = function($to){
-      options.transition($currentPage, $to)
+      // Make some guesses about the direction we're navigating by inspecting the URLs.
+      var dir = 'same'
+      var fromDepth = $currentPage.data('pjax-url') ? $currentPage.data('pjax-url').replace(/\/&/, '').split('/').length : 0
+      var toDepth = $to.data('pjax-url') ? $to.data('pjax-url').replace(/\/&/, '').split('/').length : 0
+      if (fromDepth > toDepth) {
+        dir = 'up'
+      } else if (fromDepth < toDepth) {
+        dir = 'down'
+      }
+
+      options.transition($currentPage, $to, dir)
       $currentPage = $to
     }
 

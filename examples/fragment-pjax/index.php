@@ -17,7 +17,7 @@ $(function(){
 
   $('.bbq-item').bbq_pjax({
     linkSelector: 'a',
-    transition: function($from, $to){
+    transition: function($from, $to, dir){
       $from.slideUp()
       $to.slideDown()
     }
